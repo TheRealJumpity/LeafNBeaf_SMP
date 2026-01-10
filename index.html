@@ -5,14 +5,9 @@
 <title>The LeafNBeef SMP</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-  font-family:Inter,Segoe UI,Arial,sans-serif;
-  cursor:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScyMCcgaGVpZ2h0PScyMCc+PHBvbHlnb24gcG9pbnRzPScwLDAgMjAsMTAgMCwyMCcgZmlsbD0nd2hpdGUnLz48L3N2Zz4='), auto;
-}
+/* Custom cursor */
 body{
+  cursor: url('c8a6e23d-ccc5-4fae-ab26-9e189fe2c4ae.png'), auto;
   min-height:100vh;
   background:linear-gradient(120deg,#0f2027,#203a43,#2c5364);
   background-size:300% 300%;
@@ -27,6 +22,7 @@ body{
   50%{background-position:100% 50%}
   100%{background-position:0% 50%}
 }
+*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,Segoe UI,Arial,sans-serif;}
 .card{
   background:rgba(0,0,0,.55);
   backdrop-filter:blur(12px);
@@ -37,55 +33,89 @@ body{
   box-shadow:0 20px 60px rgba(0,0,0,.5);
   text-align:center;
 }
-h1{
-  font-size:28px;
-  margin-bottom:10px;
-}
-p{
-  font-size:14px;
-  opacity:.85;
-  margin-bottom:24px;
-}
-.buttons{
-  display:flex;
-  gap:12px;
-  justify-content:center;
-}
-a{
+h1{font-size:28px;margin-bottom:10px;}
+p{font-size:14px;opacity:.85;margin-bottom:24px;}
+.buttons{display:flex;gap:12px;justify-content:center;}
+a.button{
   text-decoration:none;
   padding:12px 20px;
   border-radius:12px;
   font-size:14px;
   transition:.25s;
-}
-.primary{
   background:#1a73e8;
   color:#fff;
+  cursor:pointer;
 }
-.primary:hover{
-  background:#3b8cff;
-  transform:translateY(-2px);
+a.button:hover{background:#3b8cff; transform:translateY(-2px);}
+footer{margin-top:24px;font-size:12px;opacity:.6;}
+
+/* Pop-up modal */
+#popup{
+  display:none;
+  position:fixed;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  background:rgba(0,0,0,0.85);
+  border-radius:14px;
+  padding:24px;
+  box-shadow:0 20px 50px rgba(0,0,0,0.7);
+  z-index:1000;
+  max-width:80%;
 }
-footer{
-  margin-top:24px;
-  font-size:12px;
-  opacity:.6;
+#popup span.close{
+  position:absolute;
+  top:8px;
+  right:12px;
+  cursor:pointer;
+  font-weight:bold;
+  font-size:18px;
 }
 </style>
 </head>
-
 <body>
-  <div class="card">
-    <h1>The LeafNBeef SMP</h1>
-    <p>A clean, modern site hosted on GitHub Pages.</p>
 
-    <div class="buttons">
-      <a class="primary" href="#" onclick="alert('test.ip Java 1.21.10')">What's the IP?</a>
-    </div>
+<div class="card">
+  <h1>The LeafNBeef SMP</h1>
+  <p>A Simple vanilla-friendly Minecraft SMP</p>
 
-    <footer>
-      Created by Jumpity
-    </footer>
+  <div class="buttons">
+    <a class="button" onclick="showPopup('test.ip Java 1.21.10')">What's the IP?</a>
   </div>
+
+  <footer>Created by Jumpity</footer>
+</div>
+
+<div id="popup">
+  <span class="close" onclick="closePopup()">×</span>
+  <p id="popupText"></p>
+</div>
+
+<script>
+// Pop-up functionality
+function showPopup(text){
+  document.getElementById('popupText').textContent = text;
+  document.getElementById('popup').style.display = 'block';
+}
+function closePopup(){
+  document.getElementById('popup').style.display = 'none';
+}
+
+// Auto-update (cache bust)
+(function(){
+  const links = document.getElementsByTagName('link');
+  for(let i=0;i<links.length;i++){
+    if(links[i].rel==='stylesheet'){
+      links[i].href=links[i].href+'?v='+new Date().getTime();
+    }
+  }
+  const scripts = document.getElementsByTagName('script');
+  for(let i=0;i<scripts.length;i++){
+    if(scripts[i].src){
+      scripts[i].src = scripts[i].src+'?v='+new Date().getTime();
+    }
+  }
+})();
+</script>
+
 </body>
 </html>
