@@ -2,140 +2,286 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>The LeafNBeef SMP</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LinguaLeap – Learn Languages Free</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-/* Global body settings and cursor */
-body{
-  min-height:100vh;
-  margin:0;
-  padding:0;
-  font-family: 'Press Start 2P', monospace, Inter,Segoe UI,Arial,sans-serif;
-  color: #fff;
-  background: #0f2027;
-  display:flex;
-  flex-direction: column;
-  align-items:center;
-  cursor: url('c8a6e23d-ccc5-4fae-ab26-9e189fe2c4ae.png'), auto;
-  overflow-x: hidden;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green:#58CC02;--green-d:#46A302;--green-l:#D7FFB8;
+  --blue:#1CB0F6;--blue-d:#0A85C2;
+  --red:#FF4B4B;--red-l:#FFE0E0;
+  --orange:#FF9600;--yellow:#FFC800;
+  --purple:#CE82FF;
+  --gray:#E5E5E5;--gray-m:#AFAFAF;--gray-d:#777;
+  --text:#3C3C3C;--text-l:#6B6B6B;
+  --white:#fff;--bg:#F7F7F7;--border:#E5E5E5;
 }
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
 
-/* Minecraft block grid background */
-#blockGrid{
-  position: fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  display: grid;
-  grid-template-columns: repeat(20, 1fr);
-  grid-template-rows: repeat(12, 1fr);
-  z-index: 0;
-  pointer-events: none;
-}
-.block{
-  background: linear-gradient(145deg, #3a5a40, #4c7a57);
-  border: 1px solid #2c3a30;
-  opacity: 0.15;
-  animation: float 12s infinite alternate ease-in-out;
-}
-@keyframes float{
-  0% {transform: translateY(0);}
-  100% {transform: translateY(-20px);}
-}
+/* ── SCREENS ── */
+.screen{display:none;min-height:100vh;flex-direction:column}
+.screen.active{display:flex}
 
-/* Card styling */
-.card{
-  background:#111;
-  border-radius:18px;
-  padding:32px;
-  max-width:420px;
-  width:90%;
-  box-shadow:0 20px 60px rgba(0,0,0,.5);
-  text-align:center;
-  position: relative;
-  z-index: 10;
-  margin-top:50px;
-}
+/* ── LOADING ── */
+#ls{position:fixed;inset:0;background:var(--green);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;z-index:9999;transition:opacity .5s}
+#ls.hide{opacity:0;pointer-events:none}
+#ls .owl{font-size:72px;animation:owlBounce 1s infinite alternate}
+#ls h1{font-size:30px;font-weight:900;color:#fff;letter-spacing:-1px}
+.ldots{display:flex;gap:8px}
+.ldot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.7);animation:ldBounce 1.4s infinite}
+.ldot:nth-child(2){animation-delay:.2s}.ldot:nth-child(3){animation-delay:.4s}
+@keyframes owlBounce{from{transform:translateY(0)}to{transform:translateY(-12px)}}
+@keyframes ldBounce{0%,80%,100%{transform:scale(.8);opacity:.5}40%{transform:scale(1.2);opacity:1}}
 
-h1{font-size:28px;margin-bottom:10px;}
-p{font-size:14px;opacity:.85;margin-bottom:24px;}
+/* ── TOAST ── */
+#toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:#3C3C3C;color:#fff;padding:12px 24px;border-radius:100px;font-weight:700;font-size:14px;opacity:0;transition:all .3s;z-index:5000;pointer-events:none;white-space:nowrap}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* Gallery section */
-.gallery{
-  margin:50px 0;
-  display:flex;
-  flex-wrap: wrap;
-  gap:16px;
-  justify-content: center;
-  z-index: 10;
-  position: relative;
-}
-.gallery img{
-  width:200px;
-  height:120px;
-  object-fit: cover;
-  border-radius:12px;
-  box-shadow:0 8px 20px rgba(0,0,0,0.5);
-  transition: transform .3s;
-}
-.gallery img:hover{
-  transform: scale(1.05);
-}
-</style>
+/* ── XP POPUP ── */
+.xp-pop{position:fixed;font-size:22px;font-weight:900;color:var(--orange);pointer-events:none;z-index:6000;animation:xpFloat 1.4s ease forwards}
+@keyframes xpFloat{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-70px)}}
 
-<!-- Google font for pixelated Minecraft feel -->
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 24px;border:none;border-radius:14px;font-family:inherit;font-weight:800;font-size:15px;cursor:pointer;transition:all .15s;text-transform:uppercase;letter-spacing:.5px;text-decoration:none}
+.btn-green{background:var(--green);color:#fff;border-bottom:4px solid var(--green-d);width:100%}
+.btn-green:hover{background:var(--green-d);transform:translateY(-1px)}
+.btn-green:active{transform:translateY(2px);border-bottom-width:2px}
+.btn-blue{background:var(--blue);color:#fff;border-bottom:4px solid var(--blue-d);width:100%}
+.btn-blue:hover{background:var(--blue-d)}
+.btn-red{background:var(--red);color:#fff;border-bottom:4px solid #c03030;width:100%}
+.btn-ghost{background:#fff;color:var(--gray-d);border:2px solid var(--gray);width:100%}
+.btn-ghost:hover{background:var(--bg)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none !important}
 
-</head>
-<body>
+/* ── BOTTOM NAV ── */
+.bnav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid var(--border);display:flex;z-index:300}
+.bnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px;border:none;background:none;cursor:pointer;font-family:inherit;color:var(--gray-m);border-top:3px solid transparent;transition:all .15s}
+.bnav-btn.active{color:var(--blue);border-top-color:var(--blue)}
+.bnav-icon{font-size:22px}
+.bnav-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;margin-top:2px}
 
-<!-- Minecraft block grid -->
-<div id="blockGrid"></div>
+/* ── TOP BAR ── */
+.topbar{background:#fff;border-bottom:2px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200}
+.topbar-left{display:flex;align-items:center;gap:8px;font-size:18px;font-weight:800}
+.topstats{display:flex;align-items:center;gap:14px}
+.ts{display:flex;align-items:center;gap:5px;font-weight:800;font-size:15px}
+.ts.streak{color:var(--orange)}.ts.gems{color:var(--blue)}.ts.hearts{color:var(--red)}
 
-<div class="card">
-  <h1>The LeafNBeef SMP</h1>
-  <p>A Simple vanilla-friendly Minecraft SMP</p>
-  <p style="margin-top:16px; font-size:14px;">Java 1.21.10<br>IP: comingsoon</p>
-  <footer>Created by Jumpity</footer>
-</div>
+/* ── AUTH ── */
+#screen-auth{background:linear-gradient(160deg,#58CC02 0%,#46A302 60%,#2d7a01 100%);align-items:center;justify-content:center;padding:20px}
+.auth-box{background:#fff;border-radius:24px;padding:36px 32px;width:100%;max-width:420px;box-shadow:0 24px 60px rgba(0,0,0,.2)}
+.auth-logo{text-align:center;margin-bottom:28px}
+.auth-logo .owl{font-size:60px;display:block;animation:owlBounce 2s infinite alternate}
+.auth-logo h1{font-size:26px;font-weight:900;color:var(--green);margin-top:6px}
+.auth-logo p{font-size:13px;color:var(--gray-d);margin-top:3px}
+.auth-tabs{display:flex;background:var(--bg);border-radius:12px;padding:4px;margin-bottom:24px;gap:4px}
+.auth-tab{flex:1;padding:10px;border:none;background:none;border-radius:10px;font-family:inherit;font-weight:800;font-size:14px;cursor:pointer;color:var(--gray-m);transition:all .2s;text-transform:uppercase;letter-spacing:.3px}
+.auth-tab.active{background:#fff;color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.fgroup{margin-bottom:16px}
+.fgroup label{display:block;font-weight:700;font-size:12px;color:var(--gray-d);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.fgroup input{width:100%;padding:14px 16px;border:2px solid var(--border);border-radius:12px;font-family:inherit;font-size:16px;outline:none;transition:border-color .2s}
+.fgroup input:focus{border-color:var(--blue)}
+.fgroup input.err{border-color:var(--red)}
+.ferr{color:var(--red);font-size:12px;font-weight:700;margin-top:5px;min-height:16px}
+.fok{color:var(--green);font-size:12px;font-weight:700;margin-top:5px}
 
-<!-- Minecraft image gallery -->
-<div class="gallery">
-  <img src="https://i.imgur.com/GoXRuFP.png" alt="Minecraft 1">
-  <img src="https://i.imgur.com/X4ORdF7.png" alt="Minecraft 2">
-  <img src="https://i.imgur.com/9WjPxYo.png" alt="Minecraft 3">
-  <img src="https://i.imgur.com/mUtKTMo.png" alt="Minecraft 4">
-  <img src="https://i.imgur.com/l0ONMnD.png" alt="Minecraft 5">
-</div>
+/* ── ONBOARDING ── */
+#screen-onboarding{background:#fff}
+.ob-step{display:none;flex-direction:column;min-height:100vh;padding:40px 24px}
+.ob-step.active{display:flex}
+.ob-prog{display:flex;gap:6px;margin-bottom:40px}
+.ob-bar{flex:1;height:6px;background:var(--gray);border-radius:100px;transition:background .4s}
+.ob-bar.done{background:var(--green)}
+.ob-emoji{font-size:72px;text-align:center;margin-bottom:20px}
+.ob-title{font-size:28px;font-weight:900;text-align:center;margin-bottom:10px}
+.ob-desc{font-size:15px;text-align:center;color:var(--text-l);margin-bottom:32px;line-height:1.5}
+.ob-foot{margin-top:auto}
+.lang-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-bottom:20px}
+.lang-card{background:#fff;border:2px solid var(--border);border-radius:16px;padding:20px 12px;text-align:center;cursor:pointer;transition:all .2s;font-family:inherit}
+.lang-card:hover{border-color:var(--green);transform:translateY(-2px);box-shadow:0 8px 20px rgba(88,204,2,.15)}
+.lang-card.sel{border-color:var(--green);background:var(--green-l)}
+.lang-card .lf{font-size:44px;display:block;margin-bottom:8px}
+.lang-card .ln{font-weight:800;font-size:14px}
+.lang-card .ls{font-size:11px;color:var(--gray-m);margin-top:2px}
+.goal-opts{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.goal-opt{background:#fff;border:2px solid var(--border);border-radius:14px;padding:16px 20px;display:flex;align-items:center;gap:16px;cursor:pointer;transition:all .15s;font-family:inherit;text-align:left}
+.goal-opt:hover,.goal-opt.sel{border-color:var(--green);background:var(--green-l)}
+.goal-opt .gi{font-size:30px}
+.goal-opt .gt{font-weight:800;font-size:15px}
+.goal-opt .gx{font-size:13px;color:var(--gray-d)}
 
-<script>
-// Minecraft block grid setup
-const blockGrid = document.getElementById('blockGrid');
-const totalBlocks = 20*12;
-for(let i=0;i<totalBlocks;i++){
-  const block = document.createElement('div');
-  block.className='block';
-  block.style.animationDuration=(8 + Math.random()*8)+'s';
-  blockGrid.appendChild(block);
-}
+/* ── HOME / SKILL TREE ── */
+#screen-home{padding-bottom:80px}
+.unit-banner{border-radius:16px;padding:18px 20px;margin:16px 20px;color:#fff}
+.unit-banner h3{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;opacity:.85}
+.unit-banner h2{font-size:20px;font-weight:900;margin-top:2px}
+.unit-banner p{font-size:13px;opacity:.8;margin-top:4px}
+.skill-path{display:flex;flex-direction:column;align-items:center;padding:0 20px 20px;gap:6px}
+.skill-row{display:flex;width:100%;max-width:340px}
+.skill-row.L{justify-content:flex-start;padding-left:10px}
+.skill-row.C{justify-content:center}
+.skill-row.R{justify-content:flex-end;padding-right:10px}
+.skill-btn{width:82px;height:82px;border-radius:50%;border:none;font-size:30px;cursor:pointer;position:relative;transition:transform .2s;flex-shrink:0}
+.skill-btn.done{background:var(--green);box-shadow:0 6px 0 var(--green-d)}
+.skill-btn.curr{background:var(--green);box-shadow:0 6px 0 var(--green-d);animation:pulseSkill 2s infinite}
+.skill-btn.lock{background:var(--gray);box-shadow:0 6px 0 #bbb;cursor:not-allowed;filter:grayscale(1)}
+.skill-btn:not(.lock):hover{transform:translateY(-3px)}
+.skill-btn:not(.lock):active{transform:translateY(2px);box-shadow:0 3px 0 var(--green-d)!important}
+@keyframes pulseSkill{0%,100%{box-shadow:0 6px 0 var(--green-d),0 0 0 0 rgba(88,204,2,.4)}50%{box-shadow:0 6px 0 var(--green-d),0 0 0 14px rgba(88,204,2,0)}}
+.skill-badge{position:absolute;bottom:-4px;right:-4px;width:24px;height:24px;background:var(--yellow);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;border:2px solid #fff}
+.skill-connector{width:4px;height:28px;background:var(--gray);margin:0 auto;border-radius:2px}
+.skill-connector.done{background:var(--green)}
 
-// Auto-update (cache bust)
-(function(){
-  const links = document.getElementsByTagName('link');
-  for(let i=0;i<links.length;i++){
-    if(links[i].rel==='stylesheet'){
-      links[i].href=links[i].href+'?v='+new Date().getTime();
-    }
-  }
-  const scripts = document.getElementsByTagName('script');
-  for(let i=0;i<scripts.length;i++){
-    if(scripts[i].src){
-      scripts[i].src = scripts[i].src+'?v='+new Date().getTime();
-    }
-  }
-})();
-</script>
+/* ── LESSON INTRO ── */
+#screen-lesson-intro{align-items:center;justify-content:center;text-align:center;padding:40px 24px;background:#fff}
+.intro-icon{font-size:80px;margin-bottom:16px}
+.intro-title{font-size:26px;font-weight:900;margin-bottom:8px}
+.intro-desc{font-size:15px;color:var(--text-l);margin-bottom:28px}
+.intro-words{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:32px}
+.iword{background:var(--green-l);color:var(--green-d);border-radius:8px;padding:6px 14px;font-weight:700;font-size:14px}
 
-</body>
-</html>
+/* ── LESSON ── */
+#screen-lesson{background:#fff}
+.lesson-topbar{display:flex;align-items:center;padding:16px 20px;gap:14px;border-bottom:2px solid var(--border)}
+.lesson-close{width:38px;height:38px;border-radius:50%;border:none;background:var(--bg);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.lesson-close:hover{background:var(--gray)}
+.lesson-pbar{flex:1;height:16px;background:var(--gray);border-radius:100px;overflow:hidden}
+.lesson-pfill{height:100%;background:var(--green);border-radius:100px;transition:width .4s cubic-bezier(.4,0,.2,1)}
+.lesson-hearts{display:flex;gap:3px;font-size:19px}
+.heart-icon{transition:all .3s}
+.heart-icon.empty{opacity:.25;filter:grayscale(1)}
+
+.ex-area{flex:1;padding:24px 20px;display:flex;flex-direction:column}
+.ex-type{font-size:12px;font-weight:700;color:var(--gray-d);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
+.ex-q{font-size:22px;font-weight:900;margin-bottom:6px;line-height:1.3}
+.ex-hint{font-size:14px;color:var(--gray-d);margin-bottom:22px}
+.speech-box{background:var(--bg);border:2px solid var(--border);border-radius:16px;padding:18px;text-align:center;font-size:26px;font-weight:900;margin-bottom:24px}
+
+/* MC */
+.mc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.mc-opt{background:#fff;border:2px solid var(--border);border-radius:14px;padding:14px 10px;cursor:pointer;text-align:center;font-family:inherit;font-weight:700;font-size:14px;transition:all .15s;display:flex;align-items:center;gap:8px;justify-content:center}
+.mc-opt:hover:not(.sel):not(.correct):not(.wrong){border-color:var(--blue);background:#EEF9FE}
+.mc-opt.sel{border-color:var(--blue);background:#EEF9FE;color:var(--blue)}
+.mc-opt.correct{border-color:var(--green);background:var(--green-l);color:var(--green-d)}
+.mc-opt.wrong{border-color:var(--red);background:var(--red-l);color:var(--red)}
+.mc-emoji{font-size:22px}
+
+/* Type input */
+.type-input{width:100%;padding:16px;border:2px solid var(--border);border-radius:14px;font-family:inherit;font-size:18px;font-weight:700;outline:none;transition:border-color .2s;margin-bottom:16px}
+.type-input:focus{border-color:var(--blue)}
+.type-input.correct{border-color:var(--green);background:var(--green-l)}
+.type-input.wrong{border-color:var(--red);background:var(--red-l)}
+
+/* Arrange */
+.arrange-zone{min-height:58px;border:2px dashed var(--border);border-radius:14px;padding:10px;display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;transition:border-color .2s}
+.arrange-zone.filled{border-color:var(--blue)}
+.word-bank{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.word-tile{background:#fff;border:2px solid #C8C8C8;border-bottom:4px solid #C8C8C8;border-radius:10px;padding:8px 14px;font-family:inherit;font-weight:700;font-size:14px;cursor:pointer;transition:all .1s;user-select:none}
+.word-tile:hover:not(.used){background:var(--bg)}
+.word-tile.used{opacity:.2;pointer-events:none}
+.word-tile.ans-tile{border-color:var(--blue);border-bottom-color:var(--blue-d);color:var(--blue)}
+
+/* Feedback */
+.feedback{padding:16px 20px 24px;display:none}
+.feedback.show{display:block}
+.feedback.ok{background:var(--green-l);border-top:2px solid var(--green)}
+.feedback.bad{background:var(--red-l);border-top:2px solid var(--red)}
+.fb-title{font-size:17px;font-weight:900;margin-bottom:4px}
+.feedback.ok .fb-title{color:var(--green-d)}
+.feedback.bad .fb-title{color:var(--red)}
+.fb-sub{font-size:14px;color:var(--text-l);margin-bottom:14px}
+.fb-btn{width:100%}
+.check-area{padding:16px 20px 24px}
+
+/* ── LESSON COMPLETE ── */
+#screen-lesson-complete{align-items:center;justify-content:center;text-align:center;padding:40px 24px;background:#fff}
+.comp-icon{font-size:90px;margin-bottom:20px;animation:popIn .5s ease}
+@keyframes popIn{0%{transform:scale(0)}60%{transform:scale(1.2)}100%{transform:scale(1)}}
+.comp-title{font-size:34px;font-weight:900;color:var(--green);margin-bottom:8px}
+.comp-sub{font-size:15px;color:var(--text-l);margin-bottom:36px}
+.comp-stats{display:flex;gap:16px;justify-content:center;margin-bottom:40px;flex-wrap:wrap}
+.comp-stat{background:var(--bg);border-radius:16px;padding:20px 24px;text-align:center;min-width:90px}
+.comp-val{font-size:30px;font-weight:900;display:block}
+.comp-lbl{font-size:11px;font-weight:700;color:var(--gray-d);text-transform:uppercase;margin-top:4px}
+.comp-stat.xp .comp-val{color:var(--orange)}
+.comp-stat.acc .comp-val{color:var(--green)}
+.comp-stat.time .comp-val{color:var(--blue)}
+
+/* ── LEADERBOARD ── */
+#screen-leaderboard{padding-bottom:80px}
+.league-banner{border-radius:20px;padding:22px;text-align:center;margin:16px 20px}
+.league-banner .li{font-size:52px;display:block;margin-bottom:8px}
+.league-banner .ln{font-size:22px;font-weight:900;color:#fff}
+.league-banner .ld{font-size:13px;color:rgba(255,255,255,.85);margin-top:4px}
+.lb-list{padding:0 20px;display:flex;flex-direction:column;gap:8px}
+.lb-item{background:#fff;border:2px solid var(--border);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px}
+.lb-item.me{border-color:var(--blue);background:#EEF9FE}
+.lb-rank{width:28px;font-size:16px;font-weight:900;text-align:center;flex-shrink:0}
+.lb-rank.g1{color:#FFD700}.lb-rank.g2{color:#C0C0C0}.lb-rank.g3{color:#CD7F32}
+.lb-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#fff;flex-shrink:0}
+.lb-info{flex:1}
+.lb-name{font-weight:800;font-size:15px}
+.lb-sub{font-size:12px;color:var(--gray-d)}
+.lb-xp{font-size:15px;font-weight:900;color:var(--orange)}
+
+/* ── PROFILE ── */
+#screen-profile{padding-bottom:80px}
+.profile-hero{background:linear-gradient(135deg,var(--green),var(--green-d));color:#fff;padding:30px 20px;text-align:center}
+.profile-av{width:84px;height:84px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:900;margin:0 auto 12px;border:4px solid rgba(255,255,255,.4)}
+.profile-uname{font-size:22px;font-weight:900}
+.profile-lang{font-size:14px;opacity:.85;margin-top:4px}
+.stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;background:#fff;border-bottom:2px solid var(--border)}
+.stat-cell{padding:16px;text-align:center;border-right:2px solid var(--border)}
+.stat-cell:last-child{border-right:none}
+.stat-val{font-size:24px;font-weight:900;display:block}
+.stat-lbl{font-size:11px;font-weight:700;color:var(--gray-d);text-transform:uppercase}
+.stat-cell.streak .stat-val{color:var(--orange)}
+.stat-cell.xp .stat-val{color:var(--orange)}
+.stat-cell.gems .stat-val{color:var(--blue)}
+.sec-title{font-size:16px;font-weight:900;padding:18px 20px 10px}
+.achv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px;padding:0 20px 20px}
+.achv{background:#fff;border:2px solid var(--border);border-radius:14px;padding:16px 8px;text-align:center}
+.achv.earned{border-color:var(--yellow);background:#FFFBEE}
+.achv.locked{opacity:.35}
+.achv-icon{font-size:28px;display:block;margin-bottom:6px}
+.achv-name{font-size:11px;font-weight:700}
+.prof-btn{margin:0 20px 12px;width:calc(100% - 40px)}
+.logout-btn{margin:0 20px 20px;width:calc(100% - 40px);background:#fff;border:2px solid var(--red);border-radius:14px;padding:14px;font-family:inherit;font-weight:800;font-size:14px;cursor:pointer;color:var(--red);text-transform:uppercase;letter-spacing:.5px;transition:all .15s}
+.logout-btn:hover{background:var(--red-l)}
+
+/* ── SHOP ── */
+#screen-shop{padding-bottom:80px}
+.gems-hero{background:linear-gradient(135deg,var(--blue),var(--blue-d));color:#fff;padding:24px;text-align:center}
+.gems-big{font-size:46px;font-weight:900}
+.gems-lbl{font-size:14px;opacity:.85}
+.gems-note{font-size:12px;opacity:.65;margin-top:6px}
+.shop-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 20px 20px}
+.shop-card{background:#fff;border:2px solid var(--border);border-radius:16px;padding:20px 14px;text-align:center;transition:all .2s}
+.shop-card:hover{border-color:var(--blue);transform:translateY(-2px);box-shadow:0 8px 20px rgba(28,176,246,.12)}
+.shop-card-icon{font-size:42px;display:block;margin-bottom:8px}
+.shop-card-name{font-weight:800;font-size:14px;margin-bottom:4px}
+.shop-card-desc{font-size:12px;color:var(--gray-d);margin-bottom:12px;line-height:1.4}
+.shop-price{display:inline-flex;align-items:center;gap:5px;font-weight:800;color:var(--blue);font-size:14px;background:#EEF9FE;border:none;padding:7px 14px;border-radius:100px;cursor:pointer;font-family:inherit;transition:all .15s}
+.shop-price:hover{background:var(--blue);color:#fff}
+
+/* ── MODALS ── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px}
+.overlay.on{display:flex}
+.modal{background:#fff;border-radius:24px;padding:32px 24px;width:100%;max-width:380px;text-align:center;animation:modalIn .2s ease}
+@keyframes modalIn{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-icon{font-size:60px;display:block;margin-bottom:14px}
+.modal-title{font-size:22px;font-weight:900;margin-bottom:8px}
+.modal-desc{font-size:14px;color:var(--text-l);margin-bottom:24px;line-height:1.5}
+.modal-btns{display:flex;flex-direction:column;gap:10px}
+.modal-lang-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;max-height:280px;overflow-y:auto}
+.modal-lang-btn{background:#fff;border:2px solid var(--border);border-radius:12px;padding:10px;cursor:pointer;font-family:inherit;font-weight:700;font-size:13px;text-align:center;transition:all .15s;display:flex;align-items:center;gap:8px}
+.modal-lang-btn:hover{border-color:var(--green);background:var(--green-l)}
+
+/* Shake */
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.shake{animation:shake .3s}
+
+/* ── MISC ── */
+.hidden{display:none
