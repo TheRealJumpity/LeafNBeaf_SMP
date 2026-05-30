@@ -3,476 +3,337 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sketchmark — Logo Generator</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+<title>H0m!k Team Client</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root{
+    --bg:#06080f;
+    --card:#0f1320;
+    --primary:#7b5cff;
+    --secondary:#00d4ff;
+    --text:#ffffff;
+    --muted:#9aa4b2;
+    --border:rgba(255,255,255,.08);
+}
 
-  :root {
-    --ink: #1a1814;
-    --ink-soft: #5a5650;
-    --ink-ghost: #b8b4ae;
-    --paper: #f7f5f0;
-    --paper-warm: #eeebe3;
-    --paper-line: #dedad2;
-    --accent: #2d5a3d;
-  }
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
 
-  html, body {
-    height: 100%;
-    background: var(--paper);
-    color: var(--ink);
-    font-family: 'DM Mono', monospace;
-    overflow-x: hidden;
-  }
+body{
+    font-family:Inter,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    overflow-x:hidden;
+}
 
-  body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    padding: 3rem 1.5rem 4rem;
-  }
+.background{
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    background:
+    radial-gradient(circle at 20% 20%, rgba(123,92,255,.25), transparent 30%),
+    radial-gradient(circle at 80% 30%, rgba(0,212,255,.15), transparent 35%),
+    radial-gradient(circle at 50% 80%, rgba(123,92,255,.2), transparent 35%);
+}
 
-  header {
-    text-align: center;
-    margin-bottom: 3rem;
-  }
+.grid{
+    position:fixed;
+    inset:0;
+    background-image:
+        linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+    background-size:50px 50px;
+    mask-image:linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,.3));
+}
 
-  .wordmark {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-style: italic;
-    font-size: clamp(2rem, 5vw, 3.2rem);
-    letter-spacing: -0.02em;
-    color: var(--ink);
-    display: block;
-    margin-bottom: 0.4rem;
-  }
+.hero{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:40px;
+}
 
-  .tagline {
-    font-size: 0.7rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--ink-ghost);
-  }
+.container{
+    max-width:1200px;
+    width:100%;
+}
 
-  .rule {
-    width: 40px;
-    height: 1px;
-    background: var(--paper-line);
-    margin: 1.4rem auto 0;
-  }
+.badge{
+    display:inline-block;
+    padding:10px 18px;
+    border:1px solid var(--border);
+    background:rgba(255,255,255,.03);
+    border-radius:999px;
+    color:var(--secondary);
+    margin-bottom:25px;
+    backdrop-filter:blur(10px);
+    animation:float 4s ease-in-out infinite;
+}
 
-  .input-area {
-    width: 100%;
-    max-width: 560px;
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-  }
+h1{
+    font-size:clamp(3rem,8vw,6rem);
+    font-weight:800;
+    line-height:.95;
+}
 
-  .field-label {
-    font-size: 0.65rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-    margin-bottom: 0.5rem;
-  }
+.gradient{
+    background:linear-gradient(90deg,var(--primary),var(--secondary));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
 
-  .input-row {
-    display: flex;
-    border: 1.5px solid var(--ink);
-    border-radius: 0;
-    overflow: hidden;
-    transition: box-shadow 0.15s;
-  }
+.subtitle{
+    margin-top:25px;
+    max-width:750px;
+    color:var(--muted);
+    font-size:1.15rem;
+    line-height:1.7;
+}
 
-  .input-row:focus-within {
-    box-shadow: 3px 3px 0 var(--ink);
-  }
+.buttons{
+    display:flex;
+    gap:18px;
+    margin-top:40px;
+    flex-wrap:wrap;
+}
 
-  #prompt {
-    flex: 1;
-    background: transparent;
-    border: none;
-    outline: none;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.95rem;
-    color: var(--ink);
-    padding: 0.85rem 1rem;
-    line-height: 1.4;
-    caret-color: var(--accent);
-    min-width: 0;
-  }
+.btn{
+    text-decoration:none;
+    padding:16px 28px;
+    border-radius:14px;
+    font-weight:700;
+    transition:.25s;
+}
 
-  #prompt::placeholder { color: var(--ink-ghost); font-style: italic; }
+.download{
+    background:linear-gradient(135deg,var(--primary),var(--secondary));
+    color:white;
+    box-shadow:0 15px 40px rgba(123,92,255,.35);
+}
 
-  #generate-btn {
-    background: var(--ink);
-    color: var(--paper);
-    border: none;
-    cursor: pointer;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.7rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    padding: 0 1.4rem;
-    white-space: nowrap;
-    transition: background 0.15s, opacity 0.15s;
-    flex-shrink: 0;
-  }
+.download:hover{
+    transform:translateY(-4px);
+}
 
-  #generate-btn:hover { background: var(--accent); }
-  #generate-btn:active { opacity: 0.8; }
-  #generate-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.secondary{
+    border:1px solid var(--border);
+    background:rgba(255,255,255,.04);
+    color:white;
+}
 
-  .hint {
-    font-size: 0.65rem;
-    color: var(--ink-ghost);
-    margin-top: 0.55rem;
-    font-style: italic;
-  }
+.secondary:hover{
+    background:rgba(255,255,255,.08);
+}
 
-  .canvas-area {
-    width: 100%;
-    max-width: 560px;
-    margin-top: 2.5rem;
-    display: none;
-  }
+.cards{
+    margin-top:80px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+}
 
-  .canvas-area.visible { display: block; }
+.card{
+    background:rgba(255,255,255,.03);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:25px;
+    backdrop-filter:blur(16px);
+    transition:.3s;
+}
 
-  .canvas-frame {
-    border: 1.5px solid var(--ink);
-    background: #fff;
-    position: relative;
-    aspect-ratio: 1;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+.card:hover{
+    transform:translateY(-6px);
+    border-color:rgba(123,92,255,.5);
+}
 
-  #result-img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    display: block;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-  }
+.card h3{
+    margin-bottom:10px;
+}
 
-  #result-img.loaded { opacity: 1; }
+.card p{
+    color:var(--muted);
+    line-height:1.6;
+}
 
-  .loader {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1.2rem;
-    background: #fff;
-    transition: opacity 0.3s;
-  }
+.floating-panel{
+    position:absolute;
+    right:5%;
+    top:15%;
+    width:340px;
+    height:220px;
+    background:linear-gradient(
+        145deg,
+        rgba(123,92,255,.15),
+        rgba(0,212,255,.08)
+    );
+    border:1px solid var(--border);
+    border-radius:24px;
+    backdrop-filter:blur(20px);
+    transform:rotate(-8deg);
+    animation:float 5s ease-in-out infinite;
+}
 
-  .loader.hidden { opacity: 0; pointer-events: none; }
+.panel-content{
+    padding:24px;
+}
 
-  .pen-wrap {
-    width: 60px;
-    height: 60px;
-    position: relative;
-  }
+.panel-line{
+    height:12px;
+    border-radius:999px;
+    margin-bottom:14px;
+    background:rgba(255,255,255,.08);
+}
 
-  .pen-wrap svg {
-    width: 100%;
-    height: 100%;
-    animation: draw-spin 1.8s ease-in-out infinite;
-    transform-origin: center;
-  }
+.panel-line:nth-child(2){
+    width:75%;
+}
 
-  @keyframes draw-spin {
-    0%   { transform: rotate(0deg); }
-    25%  { transform: rotate(8deg); }
-    75%  { transform: rotate(-8deg); }
-    100% { transform: rotate(0deg); }
-  }
+.panel-line:nth-child(3){
+    width:50%;
+}
 
-  .sketch-line {
-    stroke-dasharray: 220;
-    stroke-dashoffset: 220;
-    animation: sketch 1.8s ease-in-out infinite;
-  }
+.footer{
+    text-align:center;
+    padding:50px 20px;
+    color:var(--muted);
+}
 
-  @keyframes sketch {
-    0%   { stroke-dashoffset: 220; opacity: 1; }
-    60%  { stroke-dashoffset: 0;   opacity: 1; }
-    80%  { stroke-dashoffset: 0;   opacity: 0.3; }
-    100% { stroke-dashoffset: 220; opacity: 0.3; }
-  }
+@keyframes float{
+    0%,100%{
+        transform:translateY(0px) rotate(-8deg);
+    }
+    50%{
+        transform:translateY(-15px) rotate(-8deg);
+    }
+}
 
-  .loader-text {
-    font-size: 0.65rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--ink-ghost);
-  }
+.reveal{
+    opacity:0;
+    transform:translateY(30px);
+    transition:1s;
+}
 
-  .actions {
-    display: flex;
-    gap: 0;
-    border: 1.5px solid var(--ink);
-    border-top: none;
-    overflow: hidden;
-  }
+.reveal.show{
+    opacity:1;
+    transform:translateY(0);
+}
 
-  .action-btn {
-    flex: 1;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-    padding: 0.75rem 0.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    transition: background 0.15s, color 0.15s;
-    position: relative;
-  }
-
-  .action-btn + .action-btn {
-    border-left: 1px solid var(--paper-line);
-  }
-
-  .action-btn:hover { background: var(--paper-warm); color: var(--ink); }
-  .action-btn:active { background: var(--paper-line); }
-
-  .action-btn svg {
-    width: 14px;
-    height: 14px;
-    stroke: currentColor;
-    fill: none;
-    stroke-width: 1.8;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    flex-shrink: 0;
-  }
-
-  .toast {
-    position: fixed;
-    bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%) translateY(12px);
-    background: var(--ink);
-    color: var(--paper);
-    font-family: 'DM Mono', monospace;
-    font-size: 0.7rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    padding: 0.6rem 1.4rem;
-    opacity: 0;
-    transition: opacity 0.2s, transform 0.2s;
-    pointer-events: none;
-    white-space: nowrap;
-  }
-
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-  footer {
-    margin-top: auto;
-    padding-top: 3rem;
-    font-size: 0.62rem;
-    color: var(--ink-ghost);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    text-align: center;
-  }
+@media(max-width:950px){
+    .floating-panel{
+        display:none;
+    }
+}
 </style>
 </head>
 <body>
 
-<header>
-  <span class="wordmark">Sketchmark</span>
-  <p class="tagline">Hand-drawn logo generator</p>
-  <div class="rule"></div>
-</header>
+<div class="background"></div>
+<div class="grid"></div>
 
-<div class="input-area">
-  <p class="field-label">Describe your logo</p>
-  <div class="input-row">
-    <input
-      id="prompt"
-      type="text"
-      placeholder="e.g. a coffee cup with steam rising…"
-      autocomplete="off"
-      spellcheck="false"
-    />
-    <button id="generate-btn">Generate</button>
-  </div>
-  <p class="hint">Press Enter or click Generate — results in ~5 seconds</p>
-</div>
+<section class="hero">
+    <div class="container">
 
-<div class="canvas-area" id="canvas-area">
-  <div class="canvas-frame">
-    <img id="result-img" alt="Generated logo" crossorigin="anonymous" />
-    <div class="loader" id="loader">
-      <div class="pen-wrap">
-        <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="8" y="8" width="64" height="64" rx="4"
-            stroke="#1a1814" stroke-width="1.5"
-            fill="none"
-            class="sketch-line"
-            pathLength="220"
-          />
-          <line x1="20" y1="40" x2="60" y2="40"
-            stroke="#1a1814" stroke-width="1.5"
-            class="sketch-line"
-            pathLength="220"
-            style="animation-delay:0.3s"
-          />
-          <line x1="40" y1="20" x2="40" y2="60"
-            stroke="#1a1814" stroke-width="1.5"
-            class="sketch-line"
-            pathLength="220"
-            style="animation-delay:0.6s"
-          />
-        </svg>
-      </div>
-      <span class="loader-text">Sketching…</span>
+        <div class="floating-panel">
+            <div class="panel-content">
+                <div class="panel-line"></div>
+                <div class="panel-line"></div>
+                <div class="panel-line"></div>
+            </div>
+        </div>
+
+        <div class="badge reveal">
+            H0m!k Team • Next Generation Client
+        </div>
+
+        <h1 class="reveal">
+            Power.<br>
+            <span class="gradient">Speed.</span><br>
+            Control.
+        </h1>
+
+        <p class="subtitle reveal">
+            A sleek, modern Roblox client experience built with performance,
+            stability, and usability in mind. Designed for users who want
+            a fast interface, smooth updates, and a clean workflow.
+        </p>
+
+        <div class="buttons reveal">
+            <a id="downloadBtn" class="btn download" href="#">
+                Download Client
+            </a>
+
+            <a href="#features" class="btn secondary">
+                Learn More
+            </a>
+        </div>
+
+        <div class="cards" id="features">
+
+            <div class="card reveal">
+                <h3>⚡ Fast Launch</h3>
+                <p>
+                    Optimized startup experience with a responsive UI
+                    and lightweight design philosophy.
+                </p>
+            </div>
+
+            <div class="card reveal">
+                <h3>🛡️ Modern Interface</h3>
+                <p>
+                    Built around simplicity and readability while keeping
+                    a premium visual appearance.
+                </p>
+            </div>
+
+            <div class="card reveal">
+                <h3>🚀 Frequent Updates</h3>
+                <p>
+                    Easy deployment and distribution through GitHub Pages
+                    and downloadable release packages.
+                </p>
+            </div>
+
+        </div>
+
     </div>
-  </div>
-  <div class="actions">
-    <button class="action-btn" id="download-btn" title="Download PNG">
-      <svg viewBox="0 0 24 24"><path d="M12 15V3m0 12-4-4m4 4 4-4M2 17l.621 2.485A2 2 0 0 0 4.561 21h14.878a2 2 0 0 0 1.94-1.515L22 17"/></svg>
-      Download
-    </button>
-    <button class="action-btn" id="copy-btn" title="Copy to clipboard">
-      <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-      Copy image
-    </button>
-    <button class="action-btn" id="regen-btn" title="Regenerate">
-      <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-      Retry
-    </button>
-  </div>
+</section>
+
+<div class="footer">
+    © 2026 H0m!k Team
 </div>
-
-<div class="toast" id="toast"></div>
-
-<footer>Images generated via Pollinations.ai &mdash; free &amp; open</footer>
 
 <script>
-  const promptInput = document.getElementById('prompt');
-  const generateBtn = document.getElementById('generate-btn');
-  const canvasArea  = document.getElementById('canvas-area');
-  const resultImg   = document.getElementById('result-img');
-  const loader      = document.getElementById('loader');
-  const downloadBtn = document.getElementById('download-btn');
-  const copyBtn     = document.getElementById('copy-btn');
-  const regenBtn    = document.getElementById('regen-btn');
-  const toast       = document.getElementById('toast');
+/*
+    CHANGE THIS IF YOU RENAME THE FILE
+*/
+const DOWNLOAD_FILE = "template.zip";
 
-  let currentSeed = null;
-  let currentPromptText = '';
-  let blobUrl = null;
+document.getElementById("downloadBtn").href = DOWNLOAD_FILE;
 
-  function stylePrompt(raw) {
-    return `minimalist hand-drawn single-line logo illustration of ${raw}, clean ink sketch on pure white background, no color, simple elegant lines, black and white, logo design, fine pen strokes, no shading, vector-like sketch`;
-  }
+const observer = new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+        if(entry.isIntersecting){
+            entry.target.classList.add("show");
+        }
+    });
+},{
+    threshold:0.15
+});
 
-  function showToast(msg, dur = 2000) {
-    toast.textContent = msg;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), dur);
-  }
+document.querySelectorAll(".reveal").forEach(el=>{
+    observer.observe(el);
+});
 
-  function startLoading() {
-    loader.classList.remove('hidden');
-    resultImg.classList.remove('loaded');
-    canvasArea.classList.add('visible');
-    generateBtn.disabled = true;
-    downloadBtn.disabled = true;
-    copyBtn.disabled = true;
-  }
-
-  function stopLoading() {
-    loader.classList.add('hidden');
-    generateBtn.disabled = false;
-    downloadBtn.disabled = false;
-    copyBtn.disabled = false;
-  }
-
-  function generate(userPrompt, seed) {
-    if (!userPrompt.trim()) {
-      promptInput.focus();
-      showToast('Enter a prompt first');
-      return;
-    }
-    currentPromptText = userPrompt.trim();
-    currentSeed = seed || Math.floor(Math.random() * 999999);
-    startLoading();
-    if (blobUrl) { URL.revokeObjectURL(blobUrl); blobUrl = null; }
-
-    const encoded = encodeURIComponent(stylePrompt(currentPromptText));
-    const url = `https://image.pollinations.ai/prompt/${encoded}?width=768&height=768&seed=${currentSeed}&nologo=true&model=flux`;
-
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = () => {
-      resultImg.src = img.src;
-      resultImg.classList.add('loaded');
-      stopLoading();
-
-      // cache as blob for copy/download
-      fetch(img.src)
-        .then(r => r.blob())
-        .then(b => { blobUrl = URL.createObjectURL(b); })
-        .catch(() => {});
-    };
-    img.onerror = () => {
-      stopLoading();
-      showToast('Generation failed — try again');
-      canvasArea.classList.remove('visible');
-    };
-    img.src = url;
-  }
-
-  generateBtn.addEventListener('click', () => generate(promptInput.value));
-  promptInput.addEventListener('keydown', e => { if (e.key === 'Enter') generate(promptInput.value); });
-  regenBtn.addEventListener('click', () => generate(currentPromptText, Math.floor(Math.random() * 999999)));
-
-  downloadBtn.addEventListener('click', () => {
-    if (!resultImg.src) return;
-    const a = document.createElement('a');
-    a.href = blobUrl || resultImg.src;
-    a.download = `sketchmark-${currentSeed}.png`;
-    a.click();
-  });
-
-  copyBtn.addEventListener('click', async () => {
-    try {
-      let blob;
-      if (blobUrl) {
-        blob = await fetch(blobUrl).then(r => r.blob());
-      } else {
-        const canvas = document.createElement('canvas');
-        canvas.width = resultImg.naturalWidth;
-        canvas.height = resultImg.naturalHeight;
-        canvas.getContext('2d').drawImage(resultImg, 0, 0);
-        blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
-      }
-      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
-      showToast('Copied to clipboard ✓');
-    } catch {
-      showToast('Copy failed — try download instead');
-    }
-  });
+document.getElementById("downloadBtn").addEventListener("click", ()=>{
+    console.log("Downloading:", DOWNLOAD_FILE);
+});
 </script>
+
 </body>
 </html>
